@@ -1,0 +1,5 @@
+{
+  "name": "LyricTools Web",
+  "description": "A web-based tool to parse, decrypt, merge, and convert lyrics (LRC, SRT, QRC) based on the Java LyricTools project.",
+  "requestFramePermissions": []
+}
