@@ -4,6 +4,8 @@
 
 LyricToolsWeb 是一个面向歌词文件处理的前端工具，支持解析、解密、合并和导出多种歌词格式。项目基于浏览器本地处理流程，适合整理歌词文件、合并双语歌词以及转换字幕格式。
 
+项目部署网站：<https://rsec.top/lyric-tools>
+
 ### 功能特性
 
 - 支持导入 `LRC`、`SRT`、`QRC`
@@ -58,6 +60,8 @@ types.ts               核心类型定义
 ## English
 
 LyricToolsWeb is a browser-based lyric processing tool for parsing, decrypting, merging, and exporting multiple lyric formats. It is designed for local file workflows and works well for bilingual lyric merging and subtitle conversion.
+
+Project deployment website: <https://rsec.top/lyric-tools>
 
 ### Features
 
