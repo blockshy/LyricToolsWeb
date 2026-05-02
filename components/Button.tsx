@@ -14,13 +14,13 @@ export const Button: React.FC<ButtonProps> = ({
   className = '',
   ...props 
 }) => {
-  const baseStyle = "inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900 focus:ring-offset-white disabled:opacity-50 disabled:cursor-not-allowed";
+  const baseStyle = "tool-button";
   
   const variants = {
-    primary: "bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500",
-    secondary: "bg-slate-200 hover:bg-slate-300 text-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-100 focus:ring-slate-500",
-    danger: "bg-red-600 hover:bg-red-700 text-white focus:ring-red-500",
-    ghost: "bg-transparent hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 dark:hover:text-white"
+    primary: "tool-button-primary",
+    secondary: "tool-button-secondary",
+    danger: "tool-button-danger",
+    ghost: "tool-button-ghost"
   };
 
   const sizes = {

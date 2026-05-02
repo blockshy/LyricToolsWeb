@@ -39,8 +39,8 @@ export const LyricEditor: React.FC<LyricEditorProps> = ({ lyrics, onUpdate, read
   };
 
   return (
-    <div className="h-full flex flex-col bg-white dark:bg-slate-900 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-none">
-      <div className="flex items-center px-4 py-3 bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-xs font-mono text-slate-500 dark:text-slate-400 select-none shrink-0">
+    <div className="lyric-editor">
+      <div className="lyric-editor-header">
         <div className="w-10 flex items-center justify-center shrink-0">
           <Hash className="w-3 h-3" />
         </div>
@@ -56,43 +56,35 @@ export const LyricEditor: React.FC<LyricEditorProps> = ({ lyrics, onUpdate, read
         {!readOnly && <div className="w-10 flex justify-center">Action</div>}
       </div>
       
-      <div className="flex-1 overflow-y-auto min-h-0">
+      <div className="lyric-editor-body">
         {lyrics.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
+          <div className="lyric-editor-empty">
             <p>{emptyText}</p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-100 dark:divide-slate-800">
+          <div>
             {lyrics.map((line, idx) => {
               const isDeleted = line.isDeleted;
               return (
                 <div 
                   key={line.id || idx} 
-                  className={`flex group transition-colors ${
-                    isDeleted 
-                      ? 'bg-red-50/50 dark:bg-red-900/10 hover:bg-red-50 dark:hover:bg-red-900/20' 
-                      : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
-                  }`}
+                  className={`lyric-editor-row group${isDeleted ? ' is-deleted' : ''}`}
                 >
                   {/* Index */}
-                  <div className={`w-10 px-2 py-3 font-mono text-xs select-none flex items-center justify-center shrink-0 ${
-                    isDeleted ? 'text-red-300 dark:text-red-800' : 'text-slate-400 dark:text-slate-500'
-                  }`}>
+                  <div className="lyric-index-cell">
                     {idx + 1}
                   </div>
 
                   {/* Start Time */}
-                  <div className="w-24 px-2 py-3 flex items-center justify-center shrink-0">
+                  <div className="lyric-time-cell">
                     {readOnly ? (
-                      <span className={`font-mono text-xs ${isDeleted ? 'text-slate-400 line-through' : 'text-blue-600 dark:text-blue-400'}`}>
+                      <span className={`lyric-time-text${isDeleted ? ' is-deleted' : ''}`}>
                         {formatLrcTime(line.startTimeMs)}
                       </span>
                     ) : (
                       <input 
                         type="text"
-                        className={`w-full bg-transparent text-center font-mono text-xs focus:outline-none focus:bg-white dark:focus:bg-slate-800 rounded border border-transparent focus:border-blue-500 transition-colors ${
-                          isDeleted ? 'text-slate-400 dark:text-slate-600 line-through' : 'text-blue-600 dark:text-blue-400'
-                        }`}
+                        className={`lyric-time-input${isDeleted ? ' is-deleted' : ''}`}
                         defaultValue={formatLrcTime(line.startTimeMs)}
                         onBlur={(e) => handleTimeChange(idx, 'startTimeMs', e.target.value)}
                         onKeyDown={(e) => {
@@ -107,17 +99,15 @@ export const LyricEditor: React.FC<LyricEditorProps> = ({ lyrics, onUpdate, read
                   </div>
 
                   {/* End Time */}
-                  <div className="w-24 px-2 py-3 flex items-center justify-center shrink-0">
+                  <div className="lyric-time-cell">
                     {readOnly ? (
-                      <span className={`font-mono text-xs ${isDeleted ? 'text-slate-400 line-through' : 'text-slate-400 dark:text-slate-500'}`}>
+                      <span className={`lyric-time-text secondary${isDeleted ? ' is-deleted' : ''}`}>
                         {line.endTimeMs ? formatLrcTime(line.endTimeMs) : '-'}
                       </span>
                     ) : (
                       <input 
                         type="text"
-                        className={`w-full bg-transparent text-center font-mono text-xs focus:outline-none focus:bg-white dark:focus:bg-slate-800 rounded border border-transparent focus:border-blue-500 transition-colors ${
-                          isDeleted ? 'text-slate-400 dark:text-slate-600 line-through' : 'text-slate-600 dark:text-slate-400'
-                        }`}
+                        className={`lyric-time-input secondary${isDeleted ? ' is-deleted' : ''}`}
                         defaultValue={line.endTimeMs ? formatLrcTime(line.endTimeMs) : ''}
                         placeholder="-"
                         onBlur={(e) => handleTimeChange(idx, 'endTimeMs', e.target.value)}
@@ -133,18 +123,14 @@ export const LyricEditor: React.FC<LyricEditorProps> = ({ lyrics, onUpdate, read
                   </div>
 
                   {/* Content */}
-                  <div className="flex-1 px-4 py-3 text-sm leading-relaxed min-w-0">
+                  <div className="lyric-content-cell">
                      {readOnly ? (
-                        <div className={`whitespace-pre-wrap ${isDeleted ? 'text-slate-400 dark:text-slate-600 line-through decoration-slate-400' : 'text-slate-800 dark:text-slate-200'}`}>
+                        <div className={`lyric-line-text${isDeleted ? ' is-deleted' : ''}`}>
                           {line.text}
                         </div>
                      ) : (
                        <textarea 
-                          className={`w-full bg-transparent resize-none focus:outline-none placeholder-slate-400 ${
-                            isDeleted 
-                              ? 'text-slate-400 dark:text-slate-600 line-through decoration-slate-400 cursor-not-allowed' 
-                              : 'text-slate-800 dark:text-slate-200'
-                          }`}
+                          className={`lyric-content-input${isDeleted ? ' is-deleted cursor-not-allowed' : ''}`}
                           rows={Math.max(1, line.text.split('\n').length)}
                           defaultValue={line.text}
                           onBlur={(e) => {
@@ -161,14 +147,10 @@ export const LyricEditor: React.FC<LyricEditorProps> = ({ lyrics, onUpdate, read
 
                   {/* Actions */}
                   {!readOnly && (
-                    <div className="w-10 flex items-center justify-center shrink-0 border-l border-slate-100 dark:border-slate-800/50">
+                    <div className="lyric-action-cell">
                       <button 
                         onClick={() => toggleDelete(idx)}
-                        className={`p-1.5 rounded transition-all ${
-                          isDeleted 
-                            ? 'text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20' 
-                            : 'text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
-                        }`}
+                        className={`lyric-row-action${isDeleted ? ' restore' : ''}`}
                         title={isDeleted ? "Restore" : "Delete"}
                       >
                         {isDeleted ? <RotateCcw className="w-4 h-4" /> : <Trash2 className="w-4 h-4" />}

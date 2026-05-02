@@ -30,7 +30,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ onFilesSelected, tit
 
   return (
     <div 
-      className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-8 text-center hover:border-blue-500 dark:hover:border-blue-500 hover:bg-slate-100 dark:hover:bg-slate-800/30 transition-all cursor-pointer group bg-slate-50 dark:bg-transparent"
+      className="lyric-uploader group"
       onDragOver={(e) => e.preventDefault()}
       onDrop={handleDrop}
       onClick={() => inputRef.current?.click()}
@@ -44,12 +44,12 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ onFilesSelected, tit
         onChange={handleChange}
       />
       <div className="flex flex-col items-center gap-3">
-        <div className="p-3 bg-white dark:bg-slate-800 rounded-full group-hover:scale-110 transition-transform shadow-sm dark:shadow-none">
-          <Upload className="w-6 h-6 text-blue-500 dark:text-blue-400" />
+        <div className="lyric-uploader-icon group-hover:scale-105 transition-transform">
+          <Upload className="w-6 h-6" />
         </div>
         <div>
-          <h3 className="text-slate-700 dark:text-slate-200 font-medium">{title}</h3>
-          <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">{description}</p>
+          <h3 className="lyric-uploader-title">{title}</h3>
+          <p className="lyric-uploader-copy">{description}</p>
         </div>
       </div>
     </div>

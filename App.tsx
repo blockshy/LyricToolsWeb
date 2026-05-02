@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { FileUploader } from './components/FileUploader';
 import { LyricEditor } from './components/LyricEditor';
-import { Button } from './components/Button';
 import { Modal } from './components/Modal';
 import { SupportFileType, LyricFile, LyricEntity } from './types';
 import { parseLrc, parseSrt, parseQrcXml } from './services/parser';
 import { mergeLyrics, exportToLrc, exportToSrt, exportToAss, exportToVtt } from './services/merger';
 import { decryptQRC } from './services/qrc';
 import { translations, Language } from './services/translations';
+import { applyTheme, cleanupThemeQueryParam, readInitialTheme } from './services/theme';
+import type { ThemeMode } from './services/theme';
 import { FileText, X, Settings2, ArrowRightLeft, Download, Merge, GripVertical, Eye, Moon, Sun, Languages, CircleHelp, Upload } from 'lucide-react';
 
 export default function App() {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useState<ThemeMode>(() => readInitialTheme());
   const [lang, setLang] = useState<Language>('zh');
   const [showHelp, setShowHelp] = useState(false);
   const t = translations[lang];
@@ -36,13 +37,9 @@ export default function App() {
   // Helper colors for file badges
   const colors = ['bg-blue-500', 'bg-emerald-500', 'bg-purple-500', 'bg-orange-500'];
 
-  // Effect to apply theme class
   useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    applyTheme(theme);
+    cleanupThemeQueryParam();
   }, [theme]);
 
   // Sidebar Resize Handler
@@ -196,60 +193,63 @@ export default function App() {
     : files.find(f => f.id === activeFileId)?.parsedLyrics || [];
 
   return (
-    <div className={`h-screen overflow-hidden flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 transition-colors duration-200 ${isResizing ? 'cursor-col-resize select-none' : ''}`}>
+    <div className={`lyric-app h-screen overflow-hidden flex flex-col ${isResizing ? 'cursor-col-resize select-none' : ''}`}>
       {/* Header */}
-      <header className="h-16 shrink-0 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 flex items-center justify-between px-6 z-10">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
-             <Merge className="w-5 h-5 text-white" />
+      <header className="tool-shell-header">
+        <div className="tool-brand">
+          <div className="tool-brand-mark">
+             <Merge className="w-5 h-5" />
           </div>
-          <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
-            {t.appName} <span className="text-xs font-mono text-slate-400 dark:text-slate-500 font-normal">{t.webBadge}</span>
+          <h1 className="tool-brand-title">
+            {t.appName} <span className="tool-brand-badge">{t.webBadge}</span>
           </h1>
           <button 
             onClick={() => setShowHelp(true)}
-            className="ml-1 p-1.5 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-full transition-colors"
+            className="tool-icon-button compact"
             title={t.help}
+            aria-label={t.help}
           >
             <CircleHelp className="w-5 h-5" />
           </button>
         </div>
-        <div className="flex items-center gap-3">
-           <div className="flex gap-1 border-r border-slate-200 dark:border-slate-800 pr-3 mr-1">
+        <div className="tool-header-actions">
+           <div className="tool-header-group">
              <button 
                 onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
-                className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                className="tool-icon-button"
                 title={lang === 'zh' ? 'Switch to English' : '切换中文'}
+                aria-label={t.language}
              >
                 <Languages className="w-4 h-4" />
              </button>
              <button 
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                className="tool-icon-button"
                 title={theme === 'dark' ? t.themeLight : t.themeDark}
+                aria-label={theme === 'dark' ? t.themeLight : t.themeDark}
              >
                 {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
              </button>
            </div>
            
-           <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
-             <button onClick={() => handleExport('LRC')} className="px-2 py-1 text-xs font-medium hover:bg-white dark:hover:bg-slate-700 rounded transition-colors text-slate-600 dark:text-slate-300" title={t.exportLrc}>LRC</button>
-             <button onClick={() => handleExport('SRT')} className="px-2 py-1 text-xs font-medium hover:bg-white dark:hover:bg-slate-700 rounded transition-colors text-slate-600 dark:text-slate-300" title={t.exportSrt}>SRT</button>
-             <button onClick={() => handleExport('ASS')} className="px-2 py-1 text-xs font-medium hover:bg-white dark:hover:bg-slate-700 rounded transition-colors text-slate-600 dark:text-slate-300" title={t.exportAss}>ASS</button>
-             <button onClick={() => handleExport('VTT')} className="px-2 py-1 text-xs font-medium hover:bg-white dark:hover:bg-slate-700 rounded transition-colors text-slate-600 dark:text-slate-300" title={t.exportVtt}>VTT</button>
+           <div className="export-button-group">
+             <button onClick={() => handleExport('LRC')} className="export-format-button" title={t.exportLrc}>LRC</button>
+             <button onClick={() => handleExport('SRT')} className="export-format-button" title={t.exportSrt}>SRT</button>
+             <button onClick={() => handleExport('ASS')} className="export-format-button" title={t.exportAss}>ASS</button>
+             <button onClick={() => handleExport('VTT')} className="export-format-button" title={t.exportVtt}>VTT</button>
            </div>
         </div>
       </header>
 
-      <main className="flex-1 flex overflow-hidden">
+      <main className="tool-workspace">
         {/* Sidebar: Files */}
         <div 
           style={{ width: sidebarWidth }}
-          className="bg-white dark:bg-slate-900 flex flex-col h-full shrink-0"
+          className="tool-sidebar"
         >
           {/* Scrollable Area - Takes remaining space */}
           <div className="flex-1 overflow-y-auto min-h-0 flex flex-col">
-            <div className="p-4 border-b border-slate-200 dark:border-slate-800 shrink-0">
+            <div className="tool-sidebar-section">
               <FileUploader 
                 onFilesSelected={handleFilesSelected} 
                 title={t.uploadTitle}
@@ -258,64 +258,64 @@ export default function App() {
             </div>
             
             <div className="p-4 space-y-3 flex-1">
-              <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-1">{t.workspaceFiles}</h3>
-              
+              <h3 className="tool-eyebrow">{t.workspaceFiles}</h3>
+
               {files.length === 0 && (
-                <div className="text-center py-8 text-slate-400 dark:text-slate-600 text-sm">
+                <div className="tool-empty-state">
                   {t.noFiles}
                 </div>
               )}
 
               {files.map((file, index) => (
-                <div 
-                  key={file.id} 
+                <div
+                  key={file.id}
                   draggable
                   onDragStart={() => handleDragStart(index)}
                   onDragOver={handleDragOver}
                   onDrop={() => handleDrop(index)}
-                  className={`group flex items-center p-3 rounded-lg border transition-all cursor-pointer select-none ${
-                    activeFileId === file.id 
-                    ? 'bg-blue-50 dark:bg-slate-800 border-blue-200 dark:border-blue-500/50 shadow-sm' 
-                    : 'bg-white dark:bg-slate-800/50 border-slate-100 dark:border-transparent hover:bg-slate-50 dark:hover:bg-slate-800'
-                  } ${draggedFileIndex === index ? 'opacity-50 border-dashed border-blue-400' : ''}`}
+                  className={`lyric-file-card group ${
+                    activeFileId === file.id
+                      ? 'is-active'
+                      : ''
+                  } ${draggedFileIndex === index ? 'is-dragging' : ''}`}
                   onClick={() => setActiveFileId(file.id)}
                 >
-                  <div className="cursor-grab active:cursor-grabbing text-slate-300 dark:text-slate-600 mr-2 hover:text-slate-500 dark:hover:text-slate-400">
+                  <div className="lyric-drag-handle">
                     <GripVertical className="w-4 h-4" />
                   </div>
 
-                  <div 
-                    className={`w-2 h-2 rounded-full mr-3 ${file.color} cursor-pointer hover:ring-2 ring-offset-1 ring-offset-white dark:ring-offset-slate-900 shrink-0`}
+                  <div
+                    className={`lyric-file-dot ${file.color}`}
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleFileSelection(file.id);
                     }}
                     title="Toggle for merge"
                   >
-                    {!file.isSelected && <div className="w-full h-full bg-slate-100 dark:bg-slate-900 rounded-full border border-slate-300 dark:border-slate-600" />}
+                    {!file.isSelected && <div className="lyric-file-dot-off" />}
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{file.name}</p>
-                      <span className="text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-1.5 py-0.5 rounded ml-2">
+                      <p className="lyric-file-name">{file.name}</p>
+                      <span className="lyric-file-type">
                         {file.type}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{file.parsedLyrics.length} {t.lines}</p>
+                    <p className="lyric-file-meta">{file.parsedLyrics.length} {t.lines}</p>
                   </div>
 
-                  <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button 
+                  <div className="lyric-file-actions">
+                    <button
                       onClick={(e) => { e.stopPropagation(); handleViewRaw(file); }}
-                      className="p-1 hover:bg-blue-100 dark:hover:bg-blue-500/20 text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 rounded transition-all mr-1"
+                      className="tool-mini-action"
                       title={t.viewingSource}
                     >
                       <Eye className="w-4 h-4" />
                     </button>
-                    <button 
+                    <button
                       onClick={(e) => { e.stopPropagation(); removeFile(file.id); }}
-                      className="p-1 hover:bg-red-100 dark:hover:bg-red-500/20 text-slate-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 rounded transition-all"
+                      className="tool-mini-action danger"
                       title="Remove"
                     >
                       <X className="w-4 h-4" />
@@ -327,23 +327,23 @@ export default function App() {
           </div>
 
           {/* Merge Controls - Fixed at bottom */}
-          <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 shrink-0 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] dark:shadow-none">
+          <div className="merge-control-panel">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase">{t.mergeConfig}</span>
-              <Settings2 className="w-4 h-4 text-slate-400 dark:text-slate-500" />
+              <span className="tool-eyebrow">{t.mergeConfig}</span>
+              <Settings2 className="tool-muted-icon w-4 h-4" />
             </div>
-            <label className="block text-xs text-slate-500 dark:text-slate-400 mb-2 flex justify-between">
+            <label className="tool-range-label">
                <span>{t.timeThreshold}</span>
                <span className="font-mono">{mergeThreshold}{t.ms}</span>
             </label>
             <input 
               type="range" 
-              min="0" 
-              max="2000" 
-              step="50" 
+              min="0"
+              max="2000"
+              step="50"
               value={mergeThreshold}
               onChange={(e) => setMergeThreshold(Number(e.target.value))}
-              className="w-full h-1 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+              className="tool-range"
             />
           </div>
         </div>
@@ -351,37 +351,37 @@ export default function App() {
         {/* Resizer Handle */}
         <div
           onMouseDown={startResizing}
-          className={`w-1 cursor-col-resize z-20 transition-colors shrink-0 ${
-            isResizing 
-              ? 'bg-blue-600' 
-              : 'bg-slate-200 dark:bg-slate-800 hover:bg-blue-400 dark:hover:bg-blue-500'
+          className={`tool-resizer ${
+            isResizing
+              ? 'is-active'
+              : ''
           }`}
         />
 
         {/* Main Content: Editor */}
-        <div className="flex-1 flex flex-col bg-slate-50 dark:bg-slate-950 p-6 overflow-hidden min-h-0">
-          <div className="flex items-center justify-between mb-4">
+        <div className="tool-editor-pane">
+          <div className="tool-editor-toolbar">
              <div className="flex items-center gap-4">
-               <button 
+               <button
                  onClick={() => setActiveFileId('merged')}
-                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
-                   activeFileId === 'merged' 
-                   ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30 dark:shadow-blue-900/20' 
-                   : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 border border-slate-200 dark:border-transparent'
+                 className={`merged-output-button ${
+                   activeFileId === 'merged'
+                     ? 'is-active'
+                     : ''
                  }`}
                >
                  <ArrowRightLeft className="w-4 h-4" />
                  {t.mergedOutput}
                </button>
                {activeFileId !== 'merged' && (
-                 <span className="text-sm text-slate-500 dark:text-slate-500 flex items-center gap-2 animate-in fade-in slide-in-from-left-2">
-                   <span className="w-1 h-1 bg-slate-400 dark:bg-slate-600 rounded-full" />
-                   {t.viewingSource}: <span className="font-medium text-slate-700 dark:text-slate-300">{files.find(f => f.id === activeFileId)?.name}</span>
+                 <span className="source-indicator animate-in fade-in slide-in-from-left-2">
+                   <span className="source-indicator-dot" />
+                   {t.viewingSource}: <span>{files.find(f => f.id === activeFileId)?.name}</span>
                  </span>
                )}
              </div>
              
-             <div className="text-xs text-slate-400 dark:text-slate-500 font-mono">
+             <div className="tool-line-count">
                 {activeLyrics.length} {t.lines}
              </div>
           </div>
@@ -420,53 +420,53 @@ export default function App() {
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-1">
            <div className="flex gap-4 items-start">
-             <div className="shrink-0 w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
-               <Upload className="w-5 h-5" />
-             </div>
-             <div>
-               <h4 className="font-bold text-slate-900 dark:text-slate-100 text-sm mb-1">{t.helpUpload}</h4>
-               <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">{t.helpUploadDesc}</p>
-             </div>
+	             <div className="help-icon-box">
+	               <Upload className="w-5 h-5" />
+	             </div>
+	             <div>
+	               <h4 className="help-item-title">{t.helpUpload}</h4>
+	               <p className="help-item-copy">{t.helpUploadDesc}</p>
+	             </div>
            </div>
 
            <div className="flex gap-4 items-start">
-             <div className="shrink-0 w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400">
-               <GripVertical className="w-5 h-5" />
-             </div>
-             <div>
-               <h4 className="font-bold text-slate-900 dark:text-slate-100 text-sm mb-1">{t.helpManage}</h4>
-               <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">{t.helpManageDesc}</p>
-             </div>
+	             <div className="help-icon-box">
+	               <GripVertical className="w-5 h-5" />
+	             </div>
+	             <div>
+	               <h4 className="help-item-title">{t.helpManage}</h4>
+	               <p className="help-item-copy">{t.helpManageDesc}</p>
+	             </div>
            </div>
 
            <div className="flex gap-4 items-start">
-             <div className="shrink-0 w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-               <FileText className="w-5 h-5" />
-             </div>
-             <div>
-               <h4 className="font-bold text-slate-900 dark:text-slate-100 text-sm mb-1">{t.helpEdit}</h4>
-               <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">{t.helpEditDesc}</p>
-             </div>
+	             <div className="help-icon-box">
+	               <FileText className="w-5 h-5" />
+	             </div>
+	             <div>
+	               <h4 className="help-item-title">{t.helpEdit}</h4>
+	               <p className="help-item-copy">{t.helpEditDesc}</p>
+	             </div>
            </div>
 
            <div className="flex gap-4 items-start">
-             <div className="shrink-0 w-10 h-10 rounded-lg bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-600 dark:text-orange-400">
-               <Merge className="w-5 h-5" />
-             </div>
-             <div>
-               <h4 className="font-bold text-slate-900 dark:text-slate-100 text-sm mb-1">{t.helpMerge}</h4>
-               <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">{t.helpMergeDesc}</p>
-             </div>
+	             <div className="help-icon-box">
+	               <Merge className="w-5 h-5" />
+	             </div>
+	             <div>
+	               <h4 className="help-item-title">{t.helpMerge}</h4>
+	               <p className="help-item-copy">{t.helpMergeDesc}</p>
+	             </div>
            </div>
 
            <div className="flex gap-4 items-start md:col-span-2">
-             <div className="shrink-0 w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400">
-               <Download className="w-5 h-5" />
-             </div>
-             <div>
-               <h4 className="font-bold text-slate-900 dark:text-slate-100 text-sm mb-1">{t.helpExport}</h4>
-               <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">{t.helpExportDesc}</p>
-             </div>
+	             <div className="help-icon-box">
+	               <Download className="w-5 h-5" />
+	             </div>
+	             <div>
+	               <h4 className="help-item-title">{t.helpExport}</h4>
+	               <p className="help-item-copy">{t.helpExportDesc}</p>
+	             </div>
            </div>
         </div>
       </Modal>
