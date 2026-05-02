@@ -6,14 +6,14 @@ import { SupportFileType, LyricFile, LyricEntity } from './types';
 import { parseLrc, parseSrt, parseQrcXml } from './services/parser';
 import { mergeLyrics, exportToLrc, exportToSrt, exportToAss, exportToVtt } from './services/merger';
 import { decryptQRC } from './services/qrc';
-import { translations, Language } from './services/translations';
+import { applyLanguage, cleanupLanguageQueryParam, readInitialLanguage, translations, Language } from './services/translations';
 import { applyTheme, cleanupThemeQueryParam, readInitialTheme } from './services/theme';
 import type { ThemeMode } from './services/theme';
 import { FileText, X, Settings2, ArrowRightLeft, Download, Merge, GripVertical, Eye, Moon, Sun, Languages, CircleHelp, Upload } from 'lucide-react';
 
 export default function App() {
   const [theme, setTheme] = useState<ThemeMode>(() => readInitialTheme());
-  const [lang, setLang] = useState<Language>('zh');
+  const [lang, setLang] = useState<Language>(() => readInitialLanguage());
   const [showHelp, setShowHelp] = useState(false);
   const t = translations[lang];
 
@@ -41,6 +41,11 @@ export default function App() {
     applyTheme(theme);
     cleanupThemeQueryParam();
   }, [theme]);
+
+  useEffect(() => {
+    applyLanguage(lang);
+    cleanupLanguageQueryParam();
+  }, [lang]);
 
   // Sidebar Resize Handler
   const startResizing = useCallback((mouseDownEvent: React.MouseEvent) => {
