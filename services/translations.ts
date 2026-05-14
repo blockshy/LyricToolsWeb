@@ -1,9 +1,9 @@
-export type Language = 'zh' | 'en';
+export type Language = 'zh' | 'en' | 'ja';
 
 export const languageStorageKey = 'lyric-tools-lang';
 
 export function isLanguage(value: string | null): value is Language {
-  return value === 'zh' || value === 'en';
+  return value === 'zh' || value === 'en' || value === 'ja';
 }
 
 function normalizeLanguage(value: string | null): Language | null {
@@ -17,6 +17,9 @@ function normalizeLanguage(value: string | null): Language | null {
   }
   if (normalized === 'en' || normalized === 'en-us' || normalized.startsWith('en-')) {
     return 'en';
+  }
+  if (normalized === 'ja' || normalized === 'ja-jp' || normalized.startsWith('ja-')) {
+    return 'ja';
   }
   return null;
 }
@@ -37,11 +40,14 @@ export function readInitialLanguage(storageKey = languageStorageKey): Language {
     return stored;
   }
 
-  return window.navigator.language.toLowerCase().startsWith('zh') ? 'zh' : 'en';
+  const browserLang = window.navigator.language.toLowerCase();
+  if (browserLang.startsWith('zh')) return 'zh';
+  if (browserLang.startsWith('ja')) return 'ja';
+  return 'en';
 }
 
 export function applyLanguage(language: Language, storageKey = languageStorageKey) {
-  document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en';
+  document.documentElement.lang = language === 'zh' ? 'zh-CN' : language === 'ja' ? 'ja' : 'en';
   window.localStorage.setItem(storageKey, language);
 }
 
@@ -137,5 +143,42 @@ export const translations = {
     helpMergeDesc: "Adjust 'Time Threshold' at the bottom to group lyrics with similar timestamps.",
     helpExport: "Export",
     helpExportDesc: "Download result in your preferred format."
+  },
+  ja: {
+    appName: "歌詞ツール",
+    webBadge: "WEB",
+    uploadTitle: "クリックでアップロード、またはドラッグ＆ドロップ",
+    uploadDesc: "LRC, SRT, QRC, TXT に対応",
+    workspaceFiles: "ワークスペースファイル",
+    noFiles: "ファイルがありません",
+    mergeConfig: "結合設定",
+    timeThreshold: "時間閾値",
+    mergedOutput: "結合出力",
+    viewingSource: "ソース表示中",
+    lines: "行",
+    exportLrc: "LRC エクスポート",
+    exportSrt: "SRT エクスポート",
+    exportAss: "ASS エクスポート",
+    exportVtt: "VTT エクスポート",
+    close: "閉じる",
+    rawContent: "元の内容",
+    processing: "処理中...",
+    ms: "ミリ秒",
+    theme: "テーマ",
+    language: "言語",
+    themeLight: "ライトモードに切り替え",
+    themeDark: "ダークモードに切り替え",
+    help: "ヘルプ",
+    helpTitle: "使い方ガイド",
+    helpUpload: "ファイルをインポート",
+    helpUploadDesc: "クリックまたはドラッグで LRC, SRT, QRC（自動復号）, TXT をアップロード。",
+    helpManage: "リスト管理",
+    helpManageDesc: "ドラッグで並び替え（結合順に影響）。ドットをクリックで切り替え。目のアイコンで元データを表示。",
+    helpEdit: "編集とプレビュー",
+    helpEditDesc: "テキスト/時間をクリックして編集。削除ボタンで行をエクスポートから除外。",
+    helpMerge: "結合設定",
+    helpMergeDesc: "下部の「時間閾値」を調整して、近いタイムスタンプの歌詞をグループ化。",
+    helpExport: "エクスポート",
+    helpExportDesc: "お好みのフォーマットで結果をダウンロード。"
   }
 };

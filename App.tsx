@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { FileUploader } from './components/FileUploader';
 import { LyricEditor } from './components/LyricEditor';
 import { Modal } from './components/Modal';
@@ -9,13 +9,17 @@ import { decryptQRC } from './services/qrc';
 import { applyLanguage, cleanupLanguageQueryParam, readInitialLanguage, translations, Language } from './services/translations';
 import { applyTheme, cleanupThemeQueryParam, readInitialTheme } from './services/theme';
 import type { ThemeMode } from './services/theme';
-import { FileText, X, Settings2, ArrowRightLeft, Download, Merge, GripVertical, Eye, Moon, Sun, Languages, CircleHelp, Upload } from 'lucide-react';
+import { FileText, X, Settings2, ArrowRightLeft, Download, Merge, GripVertical, Eye, Moon, Sun, Languages, CircleHelp, Upload, ChevronDown } from 'lucide-react';
 
 export default function App() {
   const [theme, setTheme] = useState<ThemeMode>(() => readInitialTheme());
   const [lang, setLang] = useState<Language>(() => readInitialLanguage());
   const [showHelp, setShowHelp] = useState(false);
   const t = translations[lang];
+
+  // Language dropdown
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
 
   const [files, setFiles] = useState<LyricFile[]>([]);
   const [mergedLyrics, setMergedLyrics] = useState<LyricEntity[]>([]);
@@ -46,6 +50,16 @@ export default function App() {
     applyLanguage(lang);
     cleanupLanguageQueryParam();
   }, [lang]);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+        setLangOpen(false);
+      }
+    };
+    if (langOpen) document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [langOpen]);
 
   // Sidebar Resize Handler
   const startResizing = useCallback((mouseDownEvent: React.MouseEvent) => {
@@ -219,14 +233,45 @@ export default function App() {
         </div>
         <div className="tool-header-actions">
            <div className="tool-header-group">
-             <button 
-                onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
-                className="tool-icon-button"
-                title={lang === 'zh' ? 'Switch to English' : '切换中文'}
-                aria-label={t.language}
-             >
-                <Languages className="w-4 h-4" />
-             </button>
+              <div className="tool-header-group" style={{ position: 'relative' }} ref={langRef}>
+                <button
+                  onClick={() => setLangOpen(!langOpen)}
+                  className="tool-icon-button"
+                  style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+                  aria-label={t.language}
+                  aria-expanded={langOpen}
+                >
+                  <Languages className="w-4 h-4" />
+                  <span style={{ fontSize: '13px', fontWeight: 500 }}>{lang.toUpperCase()}</span>
+                  <ChevronDown className="w-3 h-3" style={{ transition: 'transform 0.2s', transform: langOpen ? 'rotate(180deg)' : 'none' }} />
+                </button>
+                {langOpen && (
+                  <div style={{
+                    position: 'absolute', right: 0, top: '100%', marginTop: '4px', zIndex: 50,
+                    minWidth: '100px', borderRadius: '10px', border: '1px solid var(--surface-border)',
+                    padding: '4px', background: 'var(--surface-bg-strong)', backdropFilter: 'blur(20px)',
+                    boxShadow: 'var(--tool-shadow, 0 16px 40px rgba(0,0,0,0.12))'
+                  }}>
+                    {(['zh', 'en', 'ja'] as Language[]).map(l => (
+                      <button
+                        key={l}
+                        onClick={() => { setLang(l); setLangOpen(false); }}
+                        style={{
+                          display: 'block', width: '100%', textAlign: 'left',
+                          padding: '6px 10px', fontSize: '13px', borderRadius: '6px',
+                          cursor: 'pointer', border: 'none', background: 'transparent',
+                          color: lang === l ? 'var(--brand-accent-strong)' : 'var(--app-text)',
+                          transition: 'background 0.15s',
+                        }}
+                        onMouseEnter={e => { (e.target as HTMLElement).style.background = lang === l ? 'var(--brand-accent-soft)' : 'var(--control-bg-hover)'; }}
+                        onMouseLeave={e => { (e.target as HTMLElement).style.background = lang === l ? 'var(--brand-accent-soft)' : 'transparent'; }}
+                      >
+                        {l === 'zh' ? '简体中文' : l === 'en' ? 'English' : '日本語'}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
              <button 
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                 className="tool-icon-button"
