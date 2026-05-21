@@ -1,72 +1,66 @@
 :root {
   color-scheme: light;
-  font-family: "IBM Plex Sans", "Segoe UI", Inter, sans-serif;
-  --brand-accent: #1f6b63;
-  --brand-accent-strong: #174f4b;
-  --brand-accent-soft: rgba(31, 107, 99, 0.1);
-  --brand-accent-border: rgba(31, 107, 99, 0.22);
-  --brand-accent-contrast: #f6fbfa;
-  --danger-accent: #bb3d2f;
-  --danger-soft: rgba(187, 61, 47, 0.08);
-  --danger-border: rgba(187, 61, 47, 0.2);
-  --app-bg:
-    radial-gradient(circle at top left, rgba(17, 29, 52, 0.08), transparent 30%),
-    radial-gradient(circle at right top, rgba(31, 107, 99, 0.08), transparent 26%),
-    linear-gradient(180deg, #f3f5f7 0%, #edf1f3 56%, #e8edef 100%);
-  --app-text: #182026;
-  --header-bg: rgba(255, 255, 255, 0.78);
-  --surface-bg: rgba(255, 255, 255, 0.86);
-  --surface-bg-strong: rgba(255, 255, 255, 0.94);
-  --surface-border: rgba(28, 39, 51, 0.09);
-  --surface-shadow: 0 28px 60px rgba(18, 28, 38, 0.07);
-  --surface-shadow-soft: 0 12px 30px rgba(18, 28, 38, 0.045);
-  --muted-text: #5f6974;
-  --subtle-text: #75808d;
-  --detail-bg: rgba(244, 247, 248, 0.92);
-  --detail-value: #101828;
-  --hairline: rgba(17, 24, 39, 0.06);
-  --control-bg: rgba(255, 255, 255, 0.74);
-  --control-bg-hover: rgba(31, 107, 99, 0.09);
-  --control-border: rgba(28, 39, 51, 0.1);
-  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--brand-accent) 28%, transparent);
+  font-family: "Segoe UI", "Google Sans Text", "IBM Plex Sans", sans-serif;
+  --brand-accent: #1a73e8;
+  --brand-accent-strong: #1967d2;
+  --brand-accent-soft: #e8f0fe;
+  --brand-accent-border: #c7dcff;
+  --brand-accent-contrast: #ffffff;
+  --danger-accent: #b3261e;
+  --danger-soft: #f9dedc;
+  --danger-border: #f2b8b5;
+  --app-bg: #f8fafd;
+  --app-text: #202124;
+  --header-bg: #ffffff;
+  --surface-bg: #ffffff;
+  --surface-bg-strong: #ffffff;
+  --surface-border: #dadce0;
+  --surface-shadow: 0 2px 8px rgba(60, 64, 67, 0.08);
+  --surface-shadow-soft: 0 1px 3px rgba(60, 64, 67, 0.08);
+  --muted-text: #5f6368;
+  --subtle-text: #747775;
+  --detail-bg: #f1f3f4;
+  --detail-value: #202124;
+  --hairline: #e8eaed;
+  --control-bg: transparent;
+  --control-bg-hover: var(--brand-accent-soft);
+  --control-border: #dadce0;
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--brand-accent) 24%, transparent);
   --scrollbar-size: 11px;
   --scrollbar-track: rgba(28, 39, 51, 0.06);
-  --scrollbar-thumb: rgba(31, 107, 99, 0.34);
-  --scrollbar-thumb-hover: rgba(31, 107, 99, 0.5);
+  --scrollbar-thumb: rgba(26, 115, 232, 0.34);
+  --scrollbar-thumb-hover: rgba(25, 103, 210, 0.5);
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --brand-accent: #67b9ad;
-  --brand-accent-strong: #8dd1c6;
-  --brand-accent-soft: rgba(103, 185, 173, 0.16);
-  --brand-accent-border: rgba(103, 185, 173, 0.34);
-  --brand-accent-contrast: #0d1716;
-  --danger-accent: #ff8d7f;
-  --danger-soft: rgba(255, 141, 127, 0.14);
-  --danger-border: rgba(255, 141, 127, 0.28);
-  --app-bg:
-    radial-gradient(circle at top left, rgba(103, 185, 173, 0.12), transparent 24%),
-    radial-gradient(circle at right top, rgba(118, 142, 173, 0.12), transparent 22%),
-    linear-gradient(180deg, #0f1418 0%, #161d23 56%, #1a2128 100%);
-  --app-text: #edf3f7;
-  --header-bg: rgba(18, 24, 30, 0.8);
-  --surface-bg: rgba(18, 24, 30, 0.86);
-  --surface-bg-strong: rgba(21, 27, 34, 0.94);
-  --surface-border: rgba(123, 138, 156, 0.2);
-  --surface-shadow: 0 28px 60px rgba(0, 0, 0, 0.32);
-  --surface-shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.22);
-  --muted-text: #adb7c5;
-  --subtle-text: #93a0af;
-  --detail-bg: rgba(22, 28, 35, 0.94);
-  --detail-value: #eef2f7;
-  --hairline: rgba(148, 163, 184, 0.08);
-  --control-bg: rgba(21, 27, 34, 0.72);
-  --control-bg-hover: rgba(103, 185, 173, 0.14);
-  --control-border: rgba(148, 163, 184, 0.18);
-  --scrollbar-track: rgba(148, 163, 184, 0.08);
-  --scrollbar-thumb: rgba(103, 185, 173, 0.34);
-  --scrollbar-thumb-hover: rgba(141, 209, 198, 0.5);
+  --brand-accent: #7baaf7;
+  --brand-accent-strong: #9bbcf6;
+  --brand-accent-soft: rgba(123, 170, 247, 0.16);
+  --brand-accent-border: rgba(155, 188, 246, 0.38);
+  --brand-accent-contrast: #111318;
+  --danger-accent: #f2b8b5;
+  --danger-soft: rgba(242, 184, 181, 0.14);
+  --danger-border: rgba(242, 184, 181, 0.3);
+  --app-bg: #111318;
+  --app-text: #e3e3e3;
+  --header-bg: #1f1f1f;
+  --surface-bg: #1f1f1f;
+  --surface-bg-strong: #202124;
+  --surface-border: #3c4043;
+  --surface-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
+  --surface-shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.22);
+  --muted-text: #c4c7c5;
+  --subtle-text: #9aa0a6;
+  --detail-bg: #2b2c30;
+  --detail-value: #e3e3e3;
+  --hairline: rgba(196, 199, 197, 0.14);
+  --control-bg: transparent;
+  --control-bg-hover: var(--brand-accent-soft);
+  --control-border: #3c4043;
+  --scrollbar-track: rgba(196, 199, 197, 0.08);
+  --scrollbar-thumb: rgba(123, 170, 247, 0.34);
+  --scrollbar-thumb-hover: rgba(155, 188, 246, 0.5);
 }
 
 html,
@@ -100,14 +94,14 @@ html {
 }
 
 *::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--scrollbar-thumb), color-mix(in srgb, var(--scrollbar-thumb) 72%, transparent));
+  background: var(--scrollbar-thumb);
   border: 2px solid transparent;
   border-radius: 999px;
   background-clip: padding-box;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--scrollbar-thumb-hover), color-mix(in srgb, var(--scrollbar-thumb-hover) 76%, transparent));
+  background: var(--scrollbar-thumb-hover);
   background-clip: padding-box;
 }
 
@@ -145,9 +139,8 @@ textarea:focus-visible {
   flex: 0 0 auto;
   border-bottom: 1px solid var(--surface-border);
   background: var(--header-bg);
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
+  box-shadow: none;
   padding: 0 clamp(16px, 3vw, 30px);
-  backdrop-filter: blur(18px);
   z-index: 10;
 }
 
@@ -174,10 +167,10 @@ textarea:focus-visible {
   justify-content: center;
   flex: 0 0 auto;
   border: 1px solid var(--brand-accent-border);
-  border-radius: 13px;
-  background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent-strong));
-  color: var(--brand-accent-contrast);
-  box-shadow: 0 12px 24px color-mix(in srgb, var(--brand-accent) 18%, transparent);
+  border-radius: 10px;
+  background: var(--brand-accent-soft);
+  color: var(--brand-accent-strong);
+  box-shadow: none;
 }
 
 .tool-brand-title {
@@ -214,10 +207,10 @@ textarea:focus-visible {
 .export-format-button {
   min-height: 38px;
   border: 1px solid var(--control-border);
-  border-radius: 999px;
+  border-radius: 10px;
   background: var(--control-bg);
   color: var(--muted-text);
-  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
 }
 
 .tool-icon-button {
@@ -240,7 +233,7 @@ textarea:focus-visible {
 .export-button-group {
   gap: 4px;
   border: 1px solid var(--surface-border);
-  border-radius: 999px;
+  border-radius: 12px;
   background: var(--detail-bg);
   padding: 4px;
 }
@@ -248,7 +241,7 @@ textarea:focus-visible {
 .export-format-button {
   min-height: 30px;
   padding: 0 10px;
-  border-radius: 999px;
+  border-radius: 8px;
   background: transparent;
   font-family: "IBM Plex Mono", "JetBrains Mono", monospace;
   font-size: 0.72rem;
@@ -271,7 +264,6 @@ textarea:focus-visible {
   flex-shrink: 0;
   border-right: 1px solid var(--surface-border);
   background: var(--surface-bg);
-  backdrop-filter: blur(18px);
 }
 
 .tool-sidebar-section {
@@ -284,9 +276,9 @@ textarea:focus-visible {
   margin: 0 0 10px;
   color: var(--subtle-text);
   font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .tool-empty-state {
@@ -306,7 +298,7 @@ textarea:focus-visible {
   padding: 12px;
   cursor: pointer;
   user-select: none;
-  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+  transition: background 0.16s ease, border-color 0.16s ease;
 }
 
 .lyric-file-card:hover {
@@ -317,7 +309,7 @@ textarea:focus-visible {
 .lyric-file-card.is-active {
   border-color: var(--brand-accent-border);
   background: var(--brand-accent-soft);
-  box-shadow: var(--surface-shadow-soft);
+  box-shadow: none;
 }
 
 .lyric-file-card.is-dragging {
@@ -429,7 +421,7 @@ textarea:focus-visible {
   z-index: 1;
   border-top: 1px solid var(--hairline);
   background: var(--surface-bg-strong);
-  box-shadow: 0 -12px 26px rgba(15, 23, 42, 0.05);
+  box-shadow: none;
   padding: 16px;
 }
 
@@ -492,7 +484,7 @@ textarea:focus-visible {
   min-height: 40px;
   gap: 8px;
   border: 1px solid var(--control-border);
-  border-radius: 999px;
+  border-radius: 10px;
   background: var(--control-bg);
   color: var(--muted-text);
   padding: 0 16px;
@@ -506,7 +498,7 @@ textarea:focus-visible {
   border-color: var(--brand-accent-border);
   background: var(--brand-accent-soft);
   color: var(--brand-accent-strong);
-  box-shadow: var(--surface-shadow-soft);
+  box-shadow: none;
 }
 
 .source-indicator {
@@ -570,18 +562,17 @@ textarea:focus-visible {
 
 .lyric-uploader {
   border: 2px dashed var(--surface-border);
-  border-radius: 16px;
+  border-radius: 12px;
   background: var(--detail-bg);
   padding: 28px 18px;
   text-align: center;
   cursor: pointer;
-  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  transition: background 0.16s ease, border-color 0.16s ease;
 }
 
 .lyric-uploader:hover {
   border-color: var(--brand-accent-border);
   background: var(--surface-bg-strong);
-  transform: translateY(-1px);
 }
 
 .lyric-uploader-icon {
@@ -591,10 +582,10 @@ textarea:focus-visible {
   align-items: center;
   justify-content: center;
   border: 1px solid var(--brand-accent-border);
-  border-radius: 999px;
+  border-radius: 12px;
   background: var(--brand-accent-soft);
   color: var(--brand-accent);
-  box-shadow: var(--surface-shadow-soft);
+  box-shadow: none;
 }
 
 .lyric-uploader-title {
@@ -615,10 +606,9 @@ textarea:focus-visible {
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--surface-border);
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--surface-bg);
   box-shadow: var(--surface-shadow);
-  backdrop-filter: blur(18px);
 }
 
 .lyric-editor-header {
@@ -795,7 +785,6 @@ textarea:focus-visible {
   justify-content: center;
   background: rgba(9, 15, 22, 0.52);
   padding: 16px;
-  backdrop-filter: blur(8px);
 }
 
 .tool-modal {
@@ -805,7 +794,7 @@ textarea:focus-visible {
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--surface-border);
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--surface-bg-strong);
   box-shadow: var(--surface-shadow);
 }
@@ -901,8 +890,12 @@ textarea:focus-visible {
 }
 
 .tool-button-primary {
-  background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent-strong));
+  background: var(--brand-accent);
   color: var(--brand-accent-contrast);
+}
+
+.tool-button-primary:hover {
+  background: var(--brand-accent-strong);
 }
 
 .tool-button-secondary {

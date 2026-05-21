@@ -39,7 +39,7 @@ export default function App() {
   const [previewTitle, setPreviewTitle] = useState<string>('');
 
   // Helper colors for file badges
-  const colors = ['bg-blue-500', 'bg-emerald-500', 'bg-purple-500', 'bg-orange-500'];
+  const colors = ['bg-blue-500', 'bg-sky-500', 'bg-indigo-500', 'bg-slate-500'];
 
   useEffect(() => {
     applyTheme(theme);
@@ -249,7 +249,7 @@ export default function App() {
                   <div style={{
                     position: 'absolute', right: 0, top: '100%', marginTop: '4px', zIndex: 50,
                     minWidth: '100px', borderRadius: '10px', border: '1px solid var(--surface-border)',
-                    padding: '4px', background: 'var(--surface-bg-strong)', backdropFilter: 'blur(20px)',
+                    padding: '4px', background: 'var(--surface-bg-strong)',
                     boxShadow: 'var(--tool-shadow, 0 16px 40px rgba(0,0,0,0.12))'
                   }}>
                     {(['zh', 'en', 'ja'] as Language[]).map(l => (
