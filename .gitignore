@@ -90,9 +90,5 @@ vite.config.ts.timestamp-*
 .DS_Store
 Thumbs.db
 
-# Local deploy scripts
-run-prod.sh
-stop-prod.sh
-
 # Local development handover notes
 dev/
